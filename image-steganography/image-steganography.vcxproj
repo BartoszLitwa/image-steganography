@@ -127,7 +127,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="image-steganography.cpp" />
+    <ClCompile Include="ConsoleHandler.cpp" />
+    <ClCompile Include="FileHandler.cpp" />
+    <ClCompile Include="Helpers.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ConsoleHandler.hpp" />
+    <ClInclude Include="FileHandler.hpp" />
+    <ClInclude Include="Helpers.hpp" />
+    <ClInclude Include="structs.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="C:\Users\barto\Downloads\1.bmp" />
+    <Image Include="C:\Users\barto\Downloads\1.png" />
+    <Image Include="C:\Users\barto\Downloads\2.bmp" />
+    <Image Include="C:\Users\barto\Downloads\2.png" />
+    <Image Include="C:\Users\barto\Downloads\3.bmp" />
+    <Image Include="C:\Users\barto\Downloads\3.png" />
+    <Image Include="C:\Users\barto\Downloads\4.bmp" />
+    <Image Include="C:\Users\barto\Downloads\4.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

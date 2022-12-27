@@ -13,10 +13,65 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\src">
+      <UniqueIdentifier>{fc284768-2bcd-45af-83b2-7555def47b98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\images">
+      <UniqueIdentifier>{fd947554-54bb-44f0-b00a-3ac409585743}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="image-steganography.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FileHandler.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleHandler.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FileHandler.hpp">
+      <Filter>Source Files\src</Filter>
+    </ClInclude>
+    <ClInclude Include="structs.hpp">
+      <Filter>Source Files\src</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleHandler.hpp">
+      <Filter>Source Files\src</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers.hpp">
+      <Filter>Source Files\src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="C:\Users\barto\Downloads\3.png">
+      <Filter>Source Files\images</Filter>
+    </Image>
+    <Image Include="C:\Users\barto\Downloads\4.png">
+      <Filter>Source Files\images</Filter>
+    </Image>
+    <Image Include="C:\Users\barto\Downloads\1.png">
+      <Filter>Source Files\images</Filter>
+    </Image>
+    <Image Include="C:\Users\barto\Downloads\2.png">
+      <Filter>Source Files\images</Filter>
+    </Image>
+    <Image Include="C:\Users\barto\Downloads\4.bmp">
+      <Filter>Source Files\images</Filter>
+    </Image>
+    <Image Include="C:\Users\barto\Downloads\3.bmp">
+      <Filter>Source Files\images</Filter>
+    </Image>
+    <Image Include="C:\Users\barto\Downloads\1.bmp">
+      <Filter>Source Files\images</Filter>
+    </Image>
+    <Image Include="C:\Users\barto\Downloads\2.bmp">
+      <Filter>Source Files\images</Filter>
+    </Image>
   </ItemGroup>
 </Project>
