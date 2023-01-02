@@ -8,17 +8,25 @@
 class ConsoleHandler
 {
 private:
-	std::string filePath;
-	std::string message;
+	FileHandler* _fileHandler;
+	std::string _filePath;
+	Image _image;
 
 	bool isSupportedFileFormat(std::string path);
 	void handleInfoFlag();
-	void handleEncodeFlag();
+	void handleEncodeFlag(std::string msg);
 	void handleDecodeFlag();
-	void handleCheckFlag();
+	void handleCheckFlag(std::string msg);
 	void handleHelpFlag();
-	void handleUnknownFlag();
-	void printMessage();
+	void printMessage(Messages msg, std::string arg = "");
 public:
-	ConsoleHandler(int argc, char* argv[]);
+	ConsoleHandler() {
+		_fileHandler = new FileHandler();
+		_image = Image();
+	}
+	~ConsoleHandler() {
+		_fileHandler->~FileHandler();
+		delete _fileHandler;
+	}
+	void handleConsoleInput(int argc, char* argv[]);
 };

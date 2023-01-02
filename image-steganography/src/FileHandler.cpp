@@ -44,9 +44,9 @@ bool FileHandler::writeImage(const std::string& filePath, const Image& image) {
 }
 
 // Function to hide a message within an image
-bool FileHandler::hideMessage(Image& image, const std::string& message) {
-	// Check that the message is not too long to fit in the image
-	if (message.length() > _maxMessageLength) {
+bool FileHandler::encodeMessage(const std::string& filePath, const std::string& message) {
+	Image image;
+	if (!readImage(filePath, image)) {
 		return false;
 	}
 
@@ -58,19 +58,28 @@ bool FileHandler::hideMessage(Image& image, const std::string& message) {
 		image.pixels[i].red = message[i - 1];
 	}
 
+	if(!writeImage(filePath, image)) {
+		return false;
+	}
+
 	// Return success
 	return true;
 }
 
-std::string FileHandler::retrieveMessage(const Image& image) {
+std::string FileHandler::decodeMessage(const std::string& filePath) {
 	// Initialize an empty string to hold the retrieved message
 	std::stringstream ss;
+
+	Image image;
+	if (!readImage(filePath, image)) {
+		return NULL;
+	}
 
 	// Decode the message length from the first pixel
 	int messageLength = image.pixels[0].red;
 
 	// Check that the message length is within the valid range
-	if (messageLength > _maxMessageLength || messageLength < 0) {
+	if (messageLength < 0) {
 		return "";
 	}
 
@@ -81,4 +90,55 @@ std::string FileHandler::retrieveMessage(const Image& image) {
 
 	// Return the retrieved message
 	return ss.str();
+}
+
+bool FileHandler::checkIfCanWrite(const std::string& filePath, const std::string& msg) {
+	Image image;
+	if (!readImage(filePath, image)) {
+		return false;
+	}
+
+	// Encode the message length at the start of the pixel data
+	image.pixels[0].red = msg.length();
+
+	// Encode the message itself in the remaining pixel data
+	for (int i = 1; i < msg.length(); i++) {
+		image.pixels[i].red = msg[i - 1];
+	}
+
+	// Return success
+	return true;
+}
+
+bool FileHandler::checkIfCanRead(const std::string& filePath) {
+	// Initialize an empty string to hold the retrieved message
+	std::stringstream ss;
+
+	Image image;
+	if (!readImage(filePath, image)) {
+		return false;
+	}
+
+	// Decode the message length from the first pixel
+	int messageLength = image.pixels[0].red;
+
+	// Check that the message length is within the valid range
+	if (messageLength < 0) {
+		return false;
+	}
+
+	// Decode the message itself from the remaining pixel data
+	for (int i = 0; i < messageLength; i++) {
+		ss << image.pixels[i + 1].red;
+	}
+
+	// Return the retrieved message
+	return true;
+}
+
+bool FileHandler::getInfoImage(const std::string& filePath, Image& image) {
+	if (!readImage(filePath, image)) {
+		return false;
+	}
+	return true;
 }

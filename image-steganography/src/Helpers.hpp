@@ -1,7 +1,10 @@
 #pragma once
 #include <string>
+#include <vector>
 
 static class Helpers {
 public:
-	static bool endsWith(std::string const& value, std::string const& ending);
+	static bool endsWith(const std::string& value, const std::string& ending);
+	static std::vector<bool> stringToBits(const std::string& msg);
+	static std::string bitsToString(const std::vector<bool>& msg);
 };

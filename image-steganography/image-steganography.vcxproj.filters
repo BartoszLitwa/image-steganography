@@ -24,27 +24,36 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FileHandler.cpp">
+    <ClCompile Include="src\ConsoleHandler.cpp">
       <Filter>Source Files\src</Filter>
     </ClCompile>
-    <ClCompile Include="ConsoleHandler.cpp">
+    <ClCompile Include="src\FileHandler.cpp">
       <Filter>Source Files\src</Filter>
     </ClCompile>
-    <ClCompile Include="Helpers.cpp">
+    <ClCompile Include="src\Helpers.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\enums.hpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImageHandler.cpp">
       <Filter>Source Files\src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FileHandler.hpp">
+    <ClInclude Include="src\ConsoleHandler.hpp">
       <Filter>Source Files\src</Filter>
     </ClInclude>
-    <ClInclude Include="structs.hpp">
+    <ClInclude Include="src\FileHandler.hpp">
       <Filter>Source Files\src</Filter>
     </ClInclude>
-    <ClInclude Include="ConsoleHandler.hpp">
+    <ClInclude Include="src\Helpers.hpp">
       <Filter>Source Files\src</Filter>
     </ClInclude>
-    <ClInclude Include="Helpers.hpp">
+    <ClInclude Include="src\structs.hpp">
+      <Filter>Source Files\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ImageHandler.hpp">
       <Filter>Source Files\src</Filter>
     </ClInclude>
   </ItemGroup>

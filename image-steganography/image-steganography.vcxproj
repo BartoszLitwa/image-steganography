@@ -127,16 +127,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ConsoleHandler.cpp" />
-    <ClCompile Include="FileHandler.cpp" />
-    <ClCompile Include="Helpers.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\ConsoleHandler.cpp" />
+    <ClCompile Include="src\enums.hpp" />
+    <ClCompile Include="src\FileHandler.cpp" />
+    <ClCompile Include="src\Helpers.cpp" />
+    <ClCompile Include="src\ImageHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ConsoleHandler.hpp" />
-    <ClInclude Include="FileHandler.hpp" />
-    <ClInclude Include="Helpers.hpp" />
-    <ClInclude Include="structs.hpp" />
+    <ClInclude Include="src\ConsoleHandler.hpp" />
+    <ClInclude Include="src\FileHandler.hpp" />
+    <ClInclude Include="src\Helpers.hpp" />
+    <ClInclude Include="src\ImageHandler.hpp" />
+    <ClInclude Include="src\structs.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="C:\Users\barto\Downloads\1.bmp" />
