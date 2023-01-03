@@ -1,6 +1,7 @@
+#pragma once
 #include "ConsoleHandler.hpp"
 
-bool ConsoleHandler::isSupportedFileFormat(std::string path) {
+bool ConsoleHandler::isSupportedFileFormat(const std::string& path) const {
     if (path.length() == 0) {
         printMessage(Messages::MSG_MISSING_FILEPATH);
 		return false;
@@ -15,17 +16,22 @@ void ConsoleHandler::handleInfoFlag() {
         printMessage(Messages::MSG_UNSUPPORTED_FILE_FROMAT);
         return;
     }
-
-    // Display information about the file at filePath, such as its size, memory usage, and last modification timestamp
-    if (!_fileHandler->checkIfCanRead(_filePath)) {
-        printMessage(Messages::MSG_UNABLE_TO_READ);
-        return;
-    }
 	
-    _fileHandler->getInfoImage(_filePath, _image);
+    if (!_fileHandler->getInfoImage(_filePath, _image)) {
+		printMessage(Messages::MSG_UNABLE_TO_READ);
+		return;
+    }
+
+    // Display information about the file at filePath, such as its size, memory usage, and last modification timestamp from _image
+	std::cout << "File path: " << _filePath << std::endl;
+	std::cout << "File format: " << _image.fileType << std::endl;
+	std::cout << "File size: " << (float)_image.fileSize / 1024 / 1024 << " MB (" << _image.fileSize << " B)" << std::endl;
+	std::cout << "Width: " << _image.width << " Height: " << _image.height << std::endl;
+	std::cout << "Pixels: " << _image.width * _image.height << std::endl;
+    std::cout << "Bits per Pixel: " << _image.bitsPerPixel << std::endl;
 }
 
-void ConsoleHandler::handleEncodeFlag(std::string msg) {
+void ConsoleHandler::handleEncodeFlag(const std::string& msg) {
     if (!isSupportedFileFormat(_filePath)) {
         printMessage(Messages::MSG_UNSUPPORTED_FILE_FROMAT);
         return;
@@ -63,7 +69,7 @@ void ConsoleHandler::handleDecodeFlag() {
     }	
 }
 
-void ConsoleHandler::handleCheckFlag(std::string msg) {
+void ConsoleHandler::handleCheckFlag(const std::string& msg) {
     if (!isSupportedFileFormat(_filePath)) {
         printMessage(Messages::MSG_UNSUPPORTED_FILE_FROMAT);
         return;
@@ -78,10 +84,26 @@ void ConsoleHandler::handleCheckFlag(std::string msg) {
 
 void ConsoleHandler::handleHelpFlag() {
     // Print information about the program, its supported flags and arguments, and how to use it
-    std::cout << "Program " << std::endl;
+    std::cout << "-i (--info): This flag expects a file path to be specified later. The program should check if the path leads to a file with" <<
+        "a supported format(e.g..png or .jpg).If the file has an unsupported format(e.g..gif or .txt), the program should display an error message." << 
+        "If the file has a supported format, the program should display information about the formatand the file(e.g.image size, memory usage, " <<
+            " and last modification timestamp)." << std::endl << std::endl
+		
+        << "-e (--encrypt): This flag expects a file path and a message to be specified later.The message should be enclosed in quotation marks to be" <<
+        "treated as a single argument.The program should open the image file and save the specified message in it.As with the - i flag," <<
+        "the program should handle errors if the file has an unsupported format." << std::endl << std::endl
+		
+        << "-d (--decrypt): This flag expects a file path to be specified later.The program should open the file and try to read a message from it." << 
+        "As with the other flags, the program should handle errors if the file has an unsupported format." << std::endl << std::endl
+		
+        << "-c (--check): This flag expects a file path and a message to be specified later.The flag should check if the specified message can" <<
+        "be saved in the file or if a message is already hidden in" << std::endl << std::endl
+
+        << "-h (--help): This flag prints the 'manual' for this program how it should be operated and what each flag expects," << 
+        "which is what you are reading right now :)" << std::endl;
 }
 
-void ConsoleHandler::printMessage(Messages msg, std::string arg) {
+void ConsoleHandler::printMessage(Messages msg, std::string arg) const {
     switch (msg)
     {
     case Messages::MSG_MISSING_FILEPATH:
@@ -121,46 +143,44 @@ void ConsoleHandler::handleConsoleInput(int argc, char* argv[]) {
     }
 	
 	// Parse the command line arguments and call the appropriate handler function
-    for (int i = 0; i < argc; i++) {
-        std::string arg = argv[i];
-        if (argc >= i + 1) {
-            _filePath = argv[i + 1];
-        }
+    std::string arg = argv[0];
+    if (argc >= 1) {
+        _filePath = argv[1];
+    }
 		
-        if (arg == "-i" || arg == "--info") {
-            if (i + 1 >= argc) {
-                printMessage(Messages::MSG_MISSING_FILEPATH_ARGUMENT, arg);
-                continue;
-            }
-            handleInfoFlag();
-        }
-        else if (arg == "-e" || arg == "--encode") {
-            if (i + 2 >= argc) {
-                printMessage(Messages::MSG_MISSING_FILEPATH_ARGUMENT, arg);
-                continue;
-            }
-            handleEncodeFlag(argv[i + 2]);
-        }
-        else if (arg == "-d" || arg == "--decode") {
-            if (i + 1 >= argc) {
-                printMessage(Messages::MSG_MISSING_FILEPATH_ARGUMENT, arg);
-                continue;
-            }
-            handleDecodeFlag();
-        }
-        else if (arg == "-c" || arg == "--check") {
-            if (i + 2 >= argc) {
-                printMessage(Messages::MSG_MISSING_FILEPATH_ARGUMENT, arg);
-                continue;
-            }
-            handleCheckFlag(argv[i + 2]);
-        }
-        else if (arg == "-h" || arg == "--help") {
-            handleHelpFlag();
-        }
-        else {
-            printMessage(Messages::MSG_UNKNOWN_FLAG);
+    if (arg == "-i" || arg == "--info") {
+        if (1 >= argc) {
+            printMessage(Messages::MSG_MISSING_FILEPATH_ARGUMENT, arg);
             return;
         }
+        handleInfoFlag();
+    }
+    else if (arg == "-e" || arg == "--encode") {
+        if (2 >= argc) {
+            printMessage(Messages::MSG_MISSING_FILEPATH_ARGUMENT, arg);
+            return;
+        }
+        handleEncodeFlag(argv[2]);
+    }
+    else if (arg == "-d" || arg == "--decode") {
+        if (1 >= argc) {
+            printMessage(Messages::MSG_MISSING_FILEPATH_ARGUMENT, arg);
+            return;
+        }
+        handleDecodeFlag();
+    }
+    else if (arg == "-c" || arg == "--check") {
+        if (2 >= argc) {
+            printMessage(Messages::MSG_MISSING_FILEPATH_ARGUMENT, arg);
+            return;
+        }
+        handleCheckFlag(argv[2]);
+    }
+    else if (arg == "-h" || arg == "--help") {
+        handleHelpFlag();
+    }
+    else {
+        printMessage(Messages::MSG_UNKNOWN_FLAG);
+        return;
     }
 }

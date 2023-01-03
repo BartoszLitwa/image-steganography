@@ -6,22 +6,29 @@
 
 #include "structs.hpp"
 #include "enums.hpp"
+#include "ImageHandler.hpp"
 
 class FileHandler {
 private:
-	const std::string _messageEncoded = "msgEncoded";
+	ImageHandler* _imageHandler;
 
-	bool readImage(const std::string& filePath, Image& image);
-	bool writeImage(const std::string& filePath, const Image& image);
+	bool readImage(const std::string& filePath, Image& image) const;
+	bool writeImage(const std::string& filePath, const Image& image) const;
+	bool readPNGImage(std::ifstream& file, Image& image) const;
+	bool readBMPImage(std::ifstream& file, Image& image) const;
 public:
-	// Set the const private member value
-	FileHandler() {}
-	~FileHandler() {}
+	FileHandler() {
+		_imageHandler = new ImageHandler();
+	}
+	~FileHandler() {
+		_imageHandler->~ImageHandler();
+		delete _imageHandler;
+	}
 	
-	bool checkIfCanWrite(const std::string& filePath, const std::string& msg);
-	bool checkIfCanRead(const std::string& filePath);
-	bool getInfoImage(const std::string& filePath, Image& image);
+	bool checkIfCanWrite(const std::string& filePath, const std::string& msg) const;
+	bool checkIfCanRead(const std::string& filePath) const;
+	bool getInfoImage(const std::string& filePath, Image& image) const;
 	
-	bool encodeMessage(const std::string& filePath, const std::string& message);
-	std::string decodeMessage(const std::string& filePath);
+	bool encodeMessage(const std::string& filePath, const std::string& message) const;
+	std::string decodeMessage(const std::string& filePath) const;
 };
