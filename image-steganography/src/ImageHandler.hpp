@@ -9,6 +9,7 @@ class ImageHandler {
 private:
 	const std::string _messageEncoded = "msgEncoded";
 	const int _pixelsNeededToAllocateLength = 16; // 16 pixels - 48 bit - 6 chars
+
 	/// <summary>
 	/// Business Logic that encoded the message in Image's pixel in LSB
 	/// </summary>
@@ -50,7 +51,7 @@ public:
 	/// </summary>
 	/// <param name="image">Pass the image that holds the data of pixels</param>
 	/// <param name="message">Message that will be encoded in image</param>
-	/// <returns></returns>
+	/// <returns>Return true if successfulyy encoded message in image</returns>
 	bool encodeMessageInImage(Image& image, const std::string& message) const;
 	/// <summary>
 	/// Decode the message from the image

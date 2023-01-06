@@ -143,13 +143,15 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="C:\Users\barto\Downloads\1.bmp" />
-    <Image Include="C:\Users\barto\Downloads\1.png" />
     <Image Include="C:\Users\barto\Downloads\2.bmp" />
-    <Image Include="C:\Users\barto\Downloads\2.png" />
     <Image Include="C:\Users\barto\Downloads\3.bmp" />
-    <Image Include="C:\Users\barto\Downloads\3.png" />
     <Image Include="C:\Users\barto\Downloads\4.bmp" />
-    <Image Include="C:\Users\barto\Downloads\4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\1.ppm" />
+    <None Include="images\2.ppm" />
+    <None Include="images\3.ppm" />
+    <None Include="images\4.ppm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

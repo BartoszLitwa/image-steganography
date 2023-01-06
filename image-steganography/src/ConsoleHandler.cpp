@@ -12,8 +12,8 @@ bool ConsoleHandler::isSupportedFileFormat(const std::string& path) const {
 		return false;
     }
 	
-    // Return true if the file at the given path has a supported format .png or .bmp, false otherwise
-    return Helpers::endsWith(path, ".png") || Helpers::endsWith(path, ".bmp");
+    // Return true if the file at the given path has a supported format .ppm or .bmp, false otherwise
+    return Helpers::endsWith(path, ".ppm") || Helpers::endsWith(path, ".bmp");
 }
 
 /// <summary>

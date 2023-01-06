@@ -58,18 +58,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="C:\Users\barto\Downloads\3.png">
-      <Filter>Source Files\images</Filter>
-    </Image>
-    <Image Include="C:\Users\barto\Downloads\4.png">
-      <Filter>Source Files\images</Filter>
-    </Image>
-    <Image Include="C:\Users\barto\Downloads\1.png">
-      <Filter>Source Files\images</Filter>
-    </Image>
-    <Image Include="C:\Users\barto\Downloads\2.png">
-      <Filter>Source Files\images</Filter>
-    </Image>
     <Image Include="C:\Users\barto\Downloads\4.bmp">
       <Filter>Source Files\images</Filter>
     </Image>
@@ -82,5 +70,19 @@
     <Image Include="C:\Users\barto\Downloads\2.bmp">
       <Filter>Source Files\images</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\1.ppm">
+      <Filter>Source Files\images</Filter>
+    </None>
+    <None Include="images\2.ppm">
+      <Filter>Source Files\images</Filter>
+    </None>
+    <None Include="images\3.ppm">
+      <Filter>Source Files\images</Filter>
+    </None>
+    <None Include="images\4.ppm">
+      <Filter>Source Files\images</Filter>
+    </None>
   </ItemGroup>
 </Project>

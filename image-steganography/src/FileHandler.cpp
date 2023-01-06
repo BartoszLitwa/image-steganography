@@ -13,23 +13,18 @@ bool FileHandler::readImage(const std::string& filePath, Image& image) const {
 	if (!file.is_open()) { // We couldnt open it
 		return false;
 	}
-
-	// Read the BMP file header
-	file.read((char*)&image.fileType, sizeof(image.fileType));
-	switch (image.fileType) {
-		case FileType::BMP: // 0x4D42 is 19778 which is BMP file format flag
-			readBMPImage(file, image);
-			break;
-		case FileType::PNG: // 55551 - 0xD8FF - png file format flag
-			readPNGImage(file, image);
-			break;
-		default:
-			readBMPImage(file, image);
+	
+	bool status = true;
+	if(Helpers::endsWith(filePath, ".bmp")) {
+		status = readBMPImage(file, image);
+	}
+	else if(Helpers::endsWith(filePath, ".ppm")) {
+		status = readPPMImage(file, image);
 	}
 
 	// Close the file and return success
 	file.close();
-	return true;
+	return status;
 }
 
 /// <summary>
@@ -45,27 +40,50 @@ bool FileHandler::writeImage(const std::string& filePath, const Image& image) co
 		return false;
 	}
 
-	// Write the file header
-	file.write((char*)&image.fileType, sizeof(image.fileType));
-	file.write((char*)&image.fileSize, sizeof(image.fileSize));
-	file.write((char*)&image.reserved, sizeof(image.reserved));
-	file.write((char*)&image.dataOffset, sizeof(image.dataOffset));
+	bool status = true;
+	if (Helpers::endsWith(filePath, ".bmp")) {
+		status = writeBMPImage(file, image);
+	}
+	else if (Helpers::endsWith(filePath, ".ppm")) {
+		status = writePPMImage(file, image);
+	}
 
-	// Write the info header
-	file.write((char*)&image.infoHeaderSize, sizeof(image.infoHeaderSize));
-	file.write((char*)&image.width, sizeof(image.width));
-	file.write((char*)&image.height, sizeof(image.height));
-	file.write((char*)&image.planes, sizeof(image.planes));
-	file.write((char*)&image.bitsPerPixel, sizeof(image.bitsPerPixel));
-	
-	file.write((char*)&image.compression, sizeof(image.compression));
-	file.write((char*)&image.dataSize, sizeof(image.dataSize));
-	
-	file.write((char*)&image.xPixelsPerMeter, sizeof(image.xPixelsPerMeter));
-	file.write((char*)&image.yPixelsPerMeter, sizeof(image.yPixelsPerMeter));
-	file.write((char*)&image.colorsInColorTable, sizeof(image.colorsInColorTable));
-	file.write((char*)&image.importantColorCount, sizeof(image.importantColorCount));
+	// Close the file and return success
+	file.close();
+	return status;
+}
 
+/// <summary>
+/// Helper method for writeImage that saves the modfied image data to a .ppm file
+/// </summary>
+/// <param name="file">Input File Stream that has opened the requested .ppm file</param>
+/// <param name="image">Image from which data will be read from</param>
+/// <returns>Returns if the .ppm image has been successfully saved</returns>
+bool FileHandler::writePPMImage(std::ofstream& file, const Image& image) const {
+	file << image.ppm.magicNumber << std::endl;
+	file << image.width << std::endl;
+	file << image.height << std::endl;
+	
+	// Write the pixel data to the file
+	int bytesPerPixel = image.bitsPerPixel / 8;
+	for (int y = 0; y < image.height; ++y) {
+		for (int x = 0; x < image.width; ++x) {
+			file.write((char*)&image.pixels[y * image.width + x], bytesPerPixel);
+		}
+	}
+
+	// Close the file and return success
+	file.close();
+	return true;
+}
+
+/// <summary>
+/// Helper method for writeImage that saves the modfied image data to a .bmp file
+/// </summary>
+/// <param name="file">Input File Stream that has opened the requested .bmp file</param>
+/// <param name="image">Image from which data will be read from</param>
+/// <returns>Returns if the .bmp image has been successfully saved</returns>
+bool FileHandler::writeBMPImage(std::ofstream& file, const Image& image) const {
 	// Seek to the pixel data
 	file.seekp(image.dataOffset);
 	// Write the pixel data to the file
@@ -81,47 +99,24 @@ bool FileHandler::writeImage(const std::string& filePath, const Image& image) co
 	}
 
 	// Close the file and return success
-	file.close();
 	return true;
 }
 
 /// <summary>
-/// Helper method for readImage that reads the image data from a .png file
+/// Helper method for readImage that reads the image data from a .ppm file
 /// </summary>
-/// <param name="file">Input File Stream that has opened the requested .png file</param>
+/// <param name="file">Input File Stream that has opened the requested .ppm file</param>
 /// <param name="image">Image to which data will be saved</param>
-/// <returns>Returns if the .png image has been successfully read</returns>
-bool FileHandler::readPNGImage(std::ifstream& file, Image& image) const {
-	// Read the file size
-	file.read((char*)&image.fileSize, sizeof(image.fileSize));
-
-	// Read the reserved value
-	file.read((char*)&image.reserved, sizeof(image.reserved));
-
-	// Read the data offset
-	file.read((char*)&image.dataOffset, sizeof(image.dataOffset));
-
-	// Read the header size
-	file.read((char*)&image.infoHeaderSize, sizeof(image.infoHeaderSize));
-
-	// Read the image width and height
-	file.read((char*)&image.width, sizeof(image.width));
-	file.read((char*)&image.height, sizeof(image.height));
-
-	// Read the planes
-	file.read((char*)&image.planes, sizeof(image.planes));
-
-	// Read the bits per pixel
-	file.read((char*)&image.bitsPerPixel, sizeof(image.bitsPerPixel));
-
-	// Read the compression method
-	file.read((char*)&image.compression, sizeof(image.compression));
-
-	// Read the image data size
-	file.read((char*)&image.dataSize, sizeof(image.dataSize));
-
-	// Seek to the pixel data offset
-	file.seekg(image.dataOffset);
+/// <returns>Returns if the .ppm image has been successfully read</returns>
+bool FileHandler::readPPMImage(std::ifstream& file, Image& image) const {
+	// Read the BMP file header
+	image.fileType = FileType::PPM;
+	image.bitsPerPixel = 24;
+	
+	PPMImage ppm;
+	file >> ppm.magicNumber >> image.width	>> image.height;
+	
+	image.ppm = ppm;
 
 	// Read the pixel data
 	// Allocate memory for the pixels
@@ -143,32 +138,36 @@ bool FileHandler::readPNGImage(std::ifstream& file, Image& image) const {
 /// <param name="image">Image to which data will be saved</param>
 /// <returns>Returns if the .bmp image has been successfully read</returns>
 bool FileHandler::readBMPImage(std::ifstream& file, Image& image) const {
+	BMPImage bmpImage;
+	// Read the BMP file header
+	file.read((char*)&image.fileType, sizeof(image.fileType)); 
+	
 	file.read((char*)&image.fileSize, sizeof(image.fileSize));
 
-	file.read((char*)&image.reserved, sizeof(image.reserved));
+	file.read((char*)&bmpImage.reserved, sizeof(bmpImage.reserved));
 
 	file.read((char*)&image.dataOffset, sizeof(image.dataOffset));
 
 	// Read the header size
-	file.read((char*)&image.infoHeaderSize, sizeof(image.infoHeaderSize));
+	file.read((char*)&bmpImage.infoHeaderSize, sizeof(bmpImage.infoHeaderSize));
 
 	// Read the image width and height
 	file.read((char*)&image.width, sizeof(image.width));
 	file.read((char*)&image.height, sizeof(image.height));
 
-	file.read((char*)&image.planes, sizeof(image.planes));
-
+	file.read((char*)&bmpImage.planes, sizeof(bmpImage.planes));
+	// Read the bits per pixel
 	file.read((char*)&image.bitsPerPixel, sizeof(image.bitsPerPixel));
 
-	file.read((char*)&image.compression, sizeof(image.compression));
+	file.read((char*)&bmpImage.compression, sizeof(bmpImage.compression));
 	file.read((char*)&image.dataSize, sizeof(image.dataSize));
-	
-	file.read((char*)&image.xPixelsPerMeter, sizeof(image.xPixelsPerMeter));
-	file.read((char*)&image.yPixelsPerMeter, sizeof(image.yPixelsPerMeter));
-	file.read((char*)&image.colorsInColorTable, sizeof(image.colorsInColorTable));
-	file.read((char*)&image.importantColorCount, sizeof(image.importantColorCount));
+	file.read((char*)&bmpImage.xPixelsPerMeter, sizeof(bmpImage.xPixelsPerMeter));
+	file.read((char*)&bmpImage.yPixelsPerMeter, sizeof(bmpImage.yPixelsPerMeter));
+	file.read((char*)&bmpImage.colorsInColorTable, sizeof(bmpImage.colorsInColorTable));
+	file.read((char*)&bmpImage.importantColorCount, sizeof(bmpImage.importantColorCount));
 
 	image.pixels = new Pixel[image.width * image.height];
+	image.bmp = bmpImage;
 	
 	const int paddingAmount = ((4 - (image.width * 3) % 4) % 4);
 
@@ -178,7 +177,7 @@ bool FileHandler::readBMPImage(std::ifstream& file, Image& image) const {
 		for (int x = 0; x < image.width; ++x) {
 			file.read((char*)&image.pixels[y * image.width + x], bytesPerPixel);
 		}
-		// Account for each 
+		// Account for each padding after each row
 		file.ignore(paddingAmount);
 	}
 

@@ -17,10 +17,12 @@ enum Messages {
 
 enum FileType {
 	BMP = 0x4D42,
-	PNG = 0xD8FF
+	PNG = 0xD8FF,
+	PPM = 0x5030,
 };
 
 const std::unordered_map<FileType, std::string> fileTypeToString = {
 	{FileType::BMP, "BMP"},
 	{FileType::PNG, "PNG"},
+	{FileType::PPM, "PPM"}
 };

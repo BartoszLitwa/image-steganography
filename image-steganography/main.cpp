@@ -3,11 +3,17 @@
 #include "src/ConsoleHandler.hpp"
 #include <string.h>
 
+/// <summary>
+/// Main method of the program
+/// </summary>
+/// <param name="argc">Number of arguments</param>
+/// <param name="argv">List of arguments passed by user</param>
+/// <returns>Returns the status code when exiting the program</returns>
 int main(int argc, char* argv[])
 {
 	argc = 3;
-	std::string s1 = "-d";
-	std::string s2 = "E:/Development/Projects/image-steganography/image-steganography/images/1.bmp";
+	std::string s1 = "-e";
+	std::string s2 = "E:/Development/Projects/image-steganography/image-steganography/images/1.ppm";
 	std::string s3 = "message to be encoded";
 
 	// copy the string s1 into argv[0]

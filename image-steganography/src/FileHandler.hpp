@@ -7,6 +7,7 @@
 #include "structs.hpp"
 #include "enums.hpp"
 #include "ImageHandler.hpp"
+#include "Helpers.hpp"
 
 class FileHandler {
 private:
@@ -27,17 +28,31 @@ private:
 	/// <returns>Returns if the image has been successfully saved</returns>
 	bool writeImage(const std::string& filePath, const Image& image) const;
 	/// <summary>
+	/// Helper method for writeImage that saves the modfied image data to a .ppm file
+	/// </summary>
+	/// <param name="file">Input File Stream that has opened the requested .ppm file</param>
+	/// <param name="image">Image from which data will be read from</param>
+	/// <returns>Returns if the .ppm image has been successfully saved</returns>
+	bool writePPMImage(std::ofstream& file, const Image& image) const;
+	/// <summary>
+	/// Helper method for writeImage that saves the modfied image data to a .bmp file
+	/// </summary>
+	/// <param name="file">Input File Stream that has opened the requested .bmp file</param>
+	/// <param name="image">Image from which data will be read from</param>
+	/// <returns>Returns if the .bmp image has been successfully saved</returns>
+	bool writeBMPImage(std::ofstream& file, const Image& image) const;
+	/// <summary>
 	/// Helper method for readImage that reads the image data from a .png file
 	/// </summary>
 	/// <param name="file">Input File Stream that has opened the requested .png file</param>
-	/// <param name="image">Image to which data will be saved</param>
+	/// <param name="image">Image to which data will be saved to</param>
 	/// <returns>Returns if the .png image has been successfully read</returns>
-	bool readPNGImage(std::ifstream& file, Image& image) const;
+	bool readPPMImage(std::ifstream& file, Image& image) const;
 	/// <summary>
 	/// Helper method for readImage that reads the image data from a .bmp file
 	/// </summary>
 	/// <param name="file">Input File Stream that has opened the requested .bmp file</param>
-	/// <param name="image">Image to which data will be saved</param>
+	/// <param name="image">Image to which data will be saved to</param>
 	/// <returns>Returns if the .bmp image has been successfully read</returns>
 	bool readBMPImage(std::ifstream& file, Image& image) const;
 public:
