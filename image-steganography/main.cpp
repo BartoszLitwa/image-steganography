@@ -1,14 +1,13 @@
 #include <iostream>
 
 #include "src/ConsoleHandler.hpp"
-#define _CRT_SECURE_NO_WARNINGS
 #include <string.h>
 
 int main(int argc, char* argv[])
 {
 	argc = 3;
-	std::string s1 = "-h";
-	std::string s2 = "E:/Development/Projects/image-steganography/image-steganography/images/2.bmp";
+	std::string s1 = "-d";
+	std::string s2 = "E:/Development/Projects/image-steganography/image-steganography/images/1.bmp";
 	std::string s3 = "message to be encoded";
 
 	// copy the string s1 into argv[0]

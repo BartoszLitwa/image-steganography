@@ -24,7 +24,7 @@ void ConsoleHandler::handleInfoFlag() {
 
     // Display information about the file at filePath, such as its size, memory usage, and last modification timestamp from _image
 	std::cout << "File path: " << _filePath << std::endl;
-	std::cout << "File format: " << _image.fileType << std::endl;
+	std::cout << "File format: " << fileTypeToString.at(FileType::PNG) << std::endl;
 	std::cout << "File size: " << (float)_image.fileSize / 1024 / 1024 << " MB (" << _image.fileSize << " B)" << std::endl;
 	std::cout << "Width: " << _image.width << " Height: " << _image.height << std::endl;
 	std::cout << "Pixels: " << _image.width * _image.height << std::endl;
@@ -47,6 +47,8 @@ void ConsoleHandler::handleEncodeFlag(const std::string& msg) {
 		printMessage(Messages::MSG_UNABLE_TO_ENCODE);
 		return;
     }
+
+    std::cout << "Successfully encoded message:\n" << msg << std::endl;
 }
 
 void ConsoleHandler::handleDecodeFlag() {
@@ -62,11 +64,13 @@ void ConsoleHandler::handleDecodeFlag() {
         return;
     }
 
-    std::string msg;
-    if (!_fileHandler->encodeMessage(_filePath, msg)) {
+    std::string msg = _fileHandler->decodeMessage(_filePath);
+    if (msg.empty()) {
         printMessage(Messages::MSG_UNABLE_TO_DECODE);
         return;
-    }	
+    }
+	
+	std::cout << "Successfully Decoded message:\n" << msg << std::endl;
 }
 
 void ConsoleHandler::handleCheckFlag(const std::string& msg) {
@@ -76,10 +80,17 @@ void ConsoleHandler::handleCheckFlag(const std::string& msg) {
     }
 
     // Check if a message can be encoded or is already encoded in the file at filePath
-    if (!_fileHandler->checkIfCanWrite(_filePath, msg)) {
+    if (_fileHandler->checkIfCanRead(_filePath)) {
+        printMessage(Messages::MSG_UNABLE_TO_WRITE);
+        return;
+    }
+	
+    if (_fileHandler->checkIfCanWrite(_filePath, msg)) {
         printMessage(Messages::MSG_UNABLE_TO_READ);
         return;
     }
+
+	std::cout << "Message can be encoded in file" << std::endl;
 }
 
 void ConsoleHandler::handleHelpFlag() {
@@ -130,6 +141,8 @@ void ConsoleHandler::printMessage(Messages msg, std::string arg) const {
     case Messages::MSG_UNABLE_TO_DECODE:
 		std::cout << "Error: unable to decode message" << std::endl;
 		break;
+    case Messages::MSG_NOT_ENCODED:
+        std::cout << "Eror: message is not encoded" << std::endl;
     default:
 		std::cout << "Error: unknown message" << std::endl;
         break;
@@ -179,8 +192,7 @@ void ConsoleHandler::handleConsoleInput(int argc, char* argv[]) {
     else if (arg == "-h" || arg == "--help") {
         handleHelpFlag();
     }
-    else {
-        printMessage(Messages::MSG_UNKNOWN_FLAG);
-        return;
+    else { // Default case
+        handleHelpFlag();
     }
 }

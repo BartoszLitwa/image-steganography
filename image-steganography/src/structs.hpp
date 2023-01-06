@@ -1,19 +1,28 @@
 #pragma once
 // Structure to hold the data for a single image pixel
 struct Pixel {
-	unsigned char red;
-	unsigned char green;
-	unsigned char blue;
+	uint8_t red;
+	uint8_t green;
+	uint8_t blue;
 };
 
 // Structure to hold the data for an entire image
 struct Image {
-	int32_t width;
-	int32_t height;
 	Pixel* pixels;
+	
+	uint16_t fileType;
 	uint32_t fileSize;
-	uint16_t bitsPerPixel;
-	uint32_t dataSize;
+	uint32_t reserved;
 	uint32_t dataOffset;
-	std::string fileType;
+	uint32_t infoHeaderSize;
+	uint32_t width;
+	uint32_t height;
+	uint16_t planes;
+	uint16_t bitsPerPixel;
+	uint32_t compression;
+	uint32_t dataSize;
+	uint32_t xPixelsPerMeter;
+	uint32_t yPixelsPerMeter;
+	uint32_t colorsInColorTable;
+	uint32_t importantColorCount;
 };
