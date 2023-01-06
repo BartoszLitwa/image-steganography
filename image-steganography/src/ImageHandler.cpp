@@ -1,6 +1,13 @@
 #pragma once
 #include "ImageHandler.hpp"
 
+/// <summary>
+/// Business Logic that encoded the message in Image's pixel in LSB
+/// </summary>
+/// <param name="image">Pass the image that holds the message</param>
+/// <param name="message">Message that is going to be saved in image</param>
+/// <param name="startPixel">From which pixel we should start encoding message</param>
+/// <returns></returns>
 bool ImageHandler::encodeMessage(Image& image, const std::string& message, const int& startPixel) const
 {
     std::stringstream ss;
@@ -38,6 +45,13 @@ bool ImageHandler::encodeMessage(Image& image, const std::string& message, const
     return ss.str() == message;
 }
 
+/// <summary>
+/// Business logic of reading the decoded message from image's pixels LSB
+/// </summary>
+/// <param name="image">Pass the image that holds the message</param>
+/// <param name="startPixel">From which pixel we should start reading the encoded message</param>
+/// <param name="pixelsAlocated">How many pixels we should be reading to get correct message</param>
+/// <returns></returns>
 std::string ImageHandler::decodeMessage(const Image& image, const int& startPixel, const int& pixelsAlocated) const
 {
     std::stringstream ss;
@@ -77,11 +91,23 @@ std::string ImageHandler::decodeMessage(const Image& image, const int& startPixe
     return ss.str();
 }
 
+/// <summary>
+/// Determine how many pixels are needed to store the message
+/// </summary>
+/// <param name="message">Message that is going to be stored</param>
+/// <param name="bitsPerPixel">How many bits 1 pixel stores</param>
+/// <returns></returns>
 int ImageHandler::getPixelsNeededToAlocate(const std::string& message, const int& bitsPerPixel) const
 {
     return (message.length() * 8) / (bitsPerPixel / 8) + 1; // +1 to store the message length at the start
 }
 
+/// <summary>
+/// Replace the last bit of the given byte with the given bit
+/// </summary>
+/// <param name="val">Value that is going to be affected</param>
+/// <param name="bit">Bit to we want to replace the last bit of val</param>
+/// <returns></returns>
 uint8_t ImageHandler::replaceLastBit(uint8_t& val, unsigned char bit) const
 {
     // 0 will be represented by 000000 but ~1 will be 0
@@ -89,6 +115,14 @@ uint8_t ImageHandler::replaceLastBit(uint8_t& val, unsigned char bit) const
     return val;
 }
 
+/// <summary>
+/// Encode that the message is stored in the image - at the beginig store constant message
+/// Encode the length of the message
+/// Encode the message itself
+/// </summary>
+/// <param name="image">Pass the image that holds the data of pixels</param>
+/// <param name="message">Message that will be encoded in image</param>
+/// <returns></returns>
 bool ImageHandler::encodeMessageInImage(Image& image, const std::string& message) const {
     // Calculate the number of pixels needed to store the message
     // Each pixel can store(usually if bits per pixel = 24) 3 bits of the message (one in each channel),
@@ -124,6 +158,14 @@ bool ImageHandler::encodeMessageInImage(Image& image, const std::string& message
     return true;
 }
 
+/// <summary>
+/// Decode the message from the image
+/// First check if the image contains the message
+/// Then decode the length of the message
+/// Then decode the message itself
+/// </summary>
+/// <param name="image">Pass the image that holds the message</param>
+/// <returns>Return Decoded Message</returns>
 std::string ImageHandler::decodeMessageInImage(const Image& image) const {
     // Calculate the minimum number of pixels needed to store the message
     int numPixels = getPixelsNeededToAlocate(_messageEncoded, image.bitsPerPixel) + _pixelsNeededToAllocateLength;
@@ -157,6 +199,11 @@ std::string ImageHandler::decodeMessageInImage(const Image& image) const {
     return messageEncoded;
 }
 
+/// <summary>
+/// Check if image has been encoded before - stores constant message at the begining
+/// </summary>
+/// <param name="image">Pass the image that holds the message</param>
+/// <returns>Returns boolean - is the image encoded</returns>
 bool ImageHandler::checkIfImageIsEncoded(const Image& image) const {
     // Calculate the number of pixels needed to encode the string
     int numPixels = getPixelsNeededToAlocate(_messageEncoded, image.bitsPerPixel) + _pixelsNeededToAllocateLength;

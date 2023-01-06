@@ -1,6 +1,11 @@
 #pragma once
 #include "ConsoleHandler.hpp"
 
+/// <summary>
+/// Determines if the file path is to supported image file.
+/// </summary>
+/// <param name="path">Path to image</param>
+/// <returns></returns>
 bool ConsoleHandler::isSupportedFileFormat(const std::string& path) const {
     if (path.length() == 0) {
         printMessage(Messages::MSG_MISSING_FILEPATH);
@@ -11,6 +16,9 @@ bool ConsoleHandler::isSupportedFileFormat(const std::string& path) const {
     return Helpers::endsWith(path, ".png") || Helpers::endsWith(path, ".bmp");
 }
 
+/// <summary>
+/// Handles the Info Flag and prints the image info.
+/// </summary>
 void ConsoleHandler::handleInfoFlag() {
     if (!isSupportedFileFormat(_filePath)) {
         printMessage(Messages::MSG_UNSUPPORTED_FILE_FROMAT);
@@ -31,6 +39,10 @@ void ConsoleHandler::handleInfoFlag() {
     std::cout << "Bits per Pixel: " << _image.bitsPerPixel << std::endl;
 }
 
+/// <summary>
+/// Handles the Encode Flag and encodes the image with the message passed by user.
+/// </summary>
+/// <param name="msg"></param>
 void ConsoleHandler::handleEncodeFlag(const std::string& msg) {
     if (!isSupportedFileFormat(_filePath)) {
         printMessage(Messages::MSG_UNSUPPORTED_FILE_FROMAT);
@@ -51,6 +63,9 @@ void ConsoleHandler::handleEncodeFlag(const std::string& msg) {
     std::cout << "Successfully encoded message:\n" << msg << std::endl;
 }
 
+/// <summary>
+/// Handles the Decode Flag and decodes the image to retrieve the message encoded in Image.
+/// </summary>
 void ConsoleHandler::handleDecodeFlag() {
     if (!isSupportedFileFormat(_filePath)) {
         printMessage(Messages::MSG_UNSUPPORTED_FILE_FROMAT);
@@ -73,6 +88,10 @@ void ConsoleHandler::handleDecodeFlag() {
 	std::cout << "Successfully Decoded message:\n" << msg << std::endl;
 }
 
+/// <summary>
+/// Determines if the Image has been encoded with a message.
+/// </summary>
+/// <param name="msg"></param>
 void ConsoleHandler::handleCheckFlag(const std::string& msg) {
     if (!isSupportedFileFormat(_filePath)) {
         printMessage(Messages::MSG_UNSUPPORTED_FILE_FROMAT);
@@ -93,6 +112,9 @@ void ConsoleHandler::handleCheckFlag(const std::string& msg) {
 	std::cout << "Message can be encoded in file" << std::endl;
 }
 
+/// <summary>
+/// Handles the Help Flag and prints the help message.
+/// </summary>
 void ConsoleHandler::handleHelpFlag() {
     // Print information about the program, its supported flags and arguments, and how to use it
     std::cout << "-i (--info): This flag expects a file path to be specified later. The program should check if the path leads to a file with" <<
@@ -114,6 +136,11 @@ void ConsoleHandler::handleHelpFlag() {
         "which is what you are reading right now :)" << std::endl;
 }
 
+/// <summary>
+/// Private helper for printing the messages on console depening on the message type.
+/// </summary>
+/// <param name="msg">Enum Message that determines which message should be displayed</param>
+/// <param name="arg">Optional string that could be displayed on specifi message</param>
 void ConsoleHandler::printMessage(Messages msg, std::string arg) const {
     switch (msg)
     {
@@ -149,6 +176,11 @@ void ConsoleHandler::printMessage(Messages msg, std::string arg) const {
     }
 }
 
+/// <summary>
+/// Main method that handles the console input - flags
+/// </summary>
+/// <param name="argc">Number of arguments</param>
+/// <param name="argv">Arguments passed by user</param>
 void ConsoleHandler::handleConsoleInput(int argc, char* argv[]) {
     if (argc == 0) { // If users didnot not provide anything when launching call the help flag
         handleHelpFlag();

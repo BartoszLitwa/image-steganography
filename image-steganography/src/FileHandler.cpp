@@ -1,7 +1,12 @@
 #pragma once
 #include "FileHandler.hpp"
 
-// Function to read an image from a file
+/// <summary>
+/// Read the image depending on the file type and return the image data
+/// </summary>
+/// <param name="filePath">Filepath from which the image data will be read from</param>
+/// <param name="image">Image to which data will be saved</param>
+/// <returns>Returns if the image has been successfully read</returns>
 bool FileHandler::readImage(const std::string& filePath, Image& image) const {
 	// Open the file in binary mode
 	std::ifstream file(filePath, std::ios::binary);
@@ -27,7 +32,12 @@ bool FileHandler::readImage(const std::string& filePath, Image& image) const {
 	return true;
 }
 
-// Function to write an image to a file
+/// <summary>
+/// Save the modified pixels data with encoded message to the image
+/// </summary>
+/// <param name="filePath">Filepath to which the modfied image data will be saved</param>
+/// <param name="image">Image that holds the modfied data of the image</param>
+/// <returns>Returns if the image has been successfully saved</returns>
 bool FileHandler::writeImage(const std::string& filePath, const Image& image) const {
 	// Open the file in binary mode
 	std::ofstream file(filePath, std::ios::binary);
@@ -75,6 +85,12 @@ bool FileHandler::writeImage(const std::string& filePath, const Image& image) co
 	return true;
 }
 
+/// <summary>
+/// Helper method for readImage that reads the image data from a .png file
+/// </summary>
+/// <param name="file">Input File Stream that has opened the requested .png file</param>
+/// <param name="image">Image to which data will be saved</param>
+/// <returns>Returns if the .png image has been successfully read</returns>
 bool FileHandler::readPNGImage(std::ifstream& file, Image& image) const {
 	// Read the file size
 	file.read((char*)&image.fileSize, sizeof(image.fileSize));
@@ -120,6 +136,12 @@ bool FileHandler::readPNGImage(std::ifstream& file, Image& image) const {
 	return true;
 }
 
+/// <summary>
+/// Helper method for readImage that reads the image data from a .bmp file
+/// </summary>
+/// <param name="file">Input File Stream that has opened the requested .bmp file</param>
+/// <param name="image">Image to which data will be saved</param>
+/// <returns>Returns if the .bmp image has been successfully read</returns>
 bool FileHandler::readBMPImage(std::ifstream& file, Image& image) const {
 	file.read((char*)&image.fileSize, sizeof(image.fileSize));
 
@@ -163,7 +185,12 @@ bool FileHandler::readBMPImage(std::ifstream& file, Image& image) const {
 	return true;
 }
 
-// Function to hide a message within an image
+/// <summary>
+/// Encodes the message into the image and saves the modified image to the file
+/// </summary>
+/// <param name="filePath">Filepath to which the modfied image data will be saved to</param>
+/// <param name="message"></param>
+/// <returns></returns>
 bool FileHandler::encodeMessage(const std::string& filePath, const std::string& message) const {
 	Image image;
 	if (!readImage(filePath, image)) {
@@ -187,6 +214,11 @@ bool FileHandler::encodeMessage(const std::string& filePath, const std::string& 
 	return true;
 }
 
+/// <summary>
+/// Retrieves the encoded message from the image under the given filepath
+/// </summary>
+/// <param name="filePath">Filepath from which the image data will be read from</param>
+/// <returns>Encoded message in the image under this path</returns>
 std::string FileHandler::decodeMessage(const std::string& filePath) const {
 	// Initialize an empty string to hold the retrieved message
 	std::stringstream ss;
@@ -205,6 +237,13 @@ std::string FileHandler::decodeMessage(const std::string& filePath) const {
 	return _imageHandler->decodeMessageInImage(image);
 }
 
+/// <summary>
+/// Determine if the image under this path has been already encoded and could hold the message
+/// File is big enough to save the message inside
+/// </summary>
+/// <param name="filePath">Filepath from which the image data will be read from</param>
+/// <param name="msg">Message that would be potentially saved to file</param>
+/// <returns>Returns true if message could be stored in this file</returns>
 bool FileHandler::checkIfCanWrite(const std::string& filePath, const std::string& msg) const {
 	Image image;
 	if (!readImage(filePath, image)) {
@@ -215,6 +254,11 @@ bool FileHandler::checkIfCanWrite(const std::string& filePath, const std::string
 	return true;
 }
 
+/// <summary>
+/// Checks if the file is a valid image file and if it has already a message encoded
+/// </summary>
+/// <param name="filePath">Filepath from which the image data will be read from</param>
+/// <returns>Returns true if the file holds encoded message that could be read</returns>
 bool FileHandler::checkIfCanRead(const std::string& filePath) const {
 	Image image;
 	if (!readImage(filePath, image)) { // Read the image
@@ -224,6 +268,12 @@ bool FileHandler::checkIfCanRead(const std::string& filePath) const {
 	return _imageHandler->checkIfImageIsEncoded(image);
 }
 
+/// <summary>
+/// Read the image and return the image data for the requested file
+/// </summary>
+/// <param name="filePath">Filepath from which the image data will be read from</param>
+/// <param name="image">Modifies the passed image with the images data</param>
+/// <returns>Returns true if succesffully retrieved data from the image in filepath</returns>
 bool FileHandler::getInfoImage(const std::string& filePath, Image& image) const {
 	return readImage(filePath, image);
 }

@@ -4,7 +4,14 @@
 bool Helpers::endsWith(std::string const& value, std::string const& ending) {
     if (ending.size() > value.size()) 
         return false;
-    return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
+
+	std::string val = value;
+	// Transform the strings to lower case
+	std::transform(val.begin(), val.end(), val.begin(),
+		[](unsigned char c) { return std::tolower(c); });
+	
+	// Compare endings
+    return std::equal(ending.rbegin(), ending.rend(), val.rbegin());
 }
 
 std::vector<bool> Helpers::stringToBits(const std::string& msg) {
