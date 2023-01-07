@@ -5,9 +5,18 @@
 
 #include "structs.hpp"
 
+/// <summary>
+/// Helper class for encoding and decoding strings in images
+/// </summary>
 class ImageHandler {
 private:
+	/// <summary>
+	/// Constant message that is encoded at the beginning
+	/// </summary>
 	const std::string _messageEncoded = "msgEncoded";
+	/// <summary>
+	/// Number of pixels needed to store the message in pixels length
+	/// </summary>
 	const int _pixelsNeededToAllocateLength = 16; // 16 pixels - 48 bit - 6 chars
 
 	/// <summary>
@@ -16,7 +25,7 @@ private:
 	/// <param name="image">Pass the image that holds the message</param>
 	/// <param name="message">Message that is going to be saved in image</param>
 	/// <param name="startPixel">From which pixel we should start encoding message</param>
-	/// <returns></returns>
+	/// <returns>Returns true if successfully encoded message in the image's pixels data</returns>
 	bool encodeMessage(Image& image, const std::string& message, const int& startPixel = 0) const;
 	/// <summary>
 	/// Business logic of reading the decoded message from image's pixels LSB
@@ -24,21 +33,21 @@ private:
 	/// <param name="image">Pass the image that holds the message</param>
 	/// <param name="startPixel">From which pixel we should start reading the encoded message</param>
 	/// <param name="pixelsAlocated">How many pixels we should be reading to get correct message</param>
-	/// <returns></returns>
+	/// <returns>Returns decoded message from the modified image's pixels data</returns>
 	std::string decodeMessage(const Image& image, const int& startPixel = 0, const int& pixelsAlocated = 0) const;
 	/// <summary>
 	/// Determine how many pixels are needed to store the message
 	/// </summary>
 	/// <param name="message">Message that is going to be stored</param>
 	/// <param name="bitsPerPixel">How many bits 1 pixel stores</param>
-	/// <returns></returns>
+	/// <returns>Returns number of pixels needed to store message</returns>
 	int getPixelsNeededToAlocate(const std::string& message, const int& bitsPerPixel = 24) const;
 	/// <summary>
 	/// Replace the last bit of the given byte with the given bit
 	/// </summary>
 	/// <param name="val">Value that is going to be affected</param>
 	/// <param name="bit">Bit to we want to replace the last bit of val</param>
-	/// <returns></returns>
+	/// <returns>Returns 8 bit val with changed last bit to requested</returns>
 	uint8_t replaceLastBit(uint8_t& val, unsigned char bit) const;
 
 public:

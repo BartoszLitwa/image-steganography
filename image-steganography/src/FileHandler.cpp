@@ -14,6 +14,10 @@ bool FileHandler::readImage(const std::string& filePath, Image& image) const {
 		return false;
 	}
 	
+	// Get the last write time of the file
+	std::filesystem::file_time_type last_write_time = std::filesystem::last_write_time(filePath);
+	image.last_modified_time = std::to_string(last_write_time.time_since_epoch().count());
+	
 	bool status = true;
 	if(Helpers::endsWith(filePath, ".bmp")) {
 		status = readBMPImage(file, image);
@@ -65,20 +69,10 @@ bool FileHandler::writePPMImage(std::ofstream& file, const Image& image) const {
 		file << image.ppm.comments;
 	}
 	file << image.width << " " << image.height << std::endl;
-	if(image.ppm.max_value != 0)
-		file << image.ppm.max_value << std::endl;
+	file << image.ppm.max_value << std::endl;
 	
-	// Write the pixel data to the file
-	int bytesPerPixel = image.bitsPerPixel / 8;
-	for (int y = 0; y < image.height; ++y) {
-		for (int x = 0; x < image.width; ++x) {
-			file.write((char*)&image.pixels[y * image.width + x], bytesPerPixel);
-			file << "	";
-			/*file.write((char*)&image.pixels[y * image.width + x], bytesPerPixel);
-			Pixel pi = image.pixels[y * image.width + x];
-			int a = 1;*/
-		}
-	}
+	const size_t size = image.width * image.height * 3;
+	file.write((char*)image.pixels, size);
 
 	// Close the file and return success
 	file.close();
@@ -92,8 +86,8 @@ bool FileHandler::writePPMImage(std::ofstream& file, const Image& image) const {
 /// <param name="image">Image from which data will be read from</param>
 /// <returns>Returns if the .bmp image has been successfully saved</returns>
 bool FileHandler::writeBMPImage(std::ofstream& file, const Image& image) const {
-	// Seek to the pixel data
-	file.write((char*)&image.fileType, sizeof(image.fileType));
+	uint16_t fileType = image.fileType;
+	file.write((char*)&fileType, sizeof(fileType));
 
 	file.write((char*)&image.fileSize, sizeof(image.fileSize));
 
@@ -119,6 +113,7 @@ bool FileHandler::writeBMPImage(std::ofstream& file, const Image& image) const {
 	file.write((char*)&image.bmp.colorsInColorTable, sizeof(image.bmp.colorsInColorTable));
 	file.write((char*)&image.bmp.importantColorCount, sizeof(image.bmp.importantColorCount));
 	
+	// Seek to the pixel data
 	file.seekp(image.dataOffset);
 	// Write the pixel data to the file
 	const int paddingAmount = (4 - (image.width * (image.bitsPerPixel / 8)) % 4) % 4;
@@ -156,7 +151,7 @@ bool FileHandler::readPPMImage(std::ifstream& file, Image& image) const {
 
 	// Read the next three lines and extract the image width, height, and maximum value
 	std::string line;
-	for (int i = 0; i < 3; ++i) {
+	for (int i = 0; i < 2; ++i) {
 		std::getline(file, line);
 		std::stringstream ss(line);
 		if (line[0] == '#') {
@@ -178,16 +173,17 @@ bool FileHandler::readPPMImage(std::ifstream& file, Image& image) const {
 	}
 	
 	image.ppm = ppm;
+	image.dataSize = image.width * image.height * sizeof(Pixel);
+	image.fileSize = image.dataSize + sizeof(image.ppm.magicNumber);
+	image.fileSize += sizeof(image.ppm.height) + sizeof(image.ppm.width) + sizeof(image.ppm.max_value);
+	image.fileSize += sizeof(image.ppm.comments);
 
-	// Read the pixel data
 	// Allocate memory for the pixels
 	image.pixels = new Pixel[image.width * image.height];
-	int bytesPerPixel = image.bitsPerPixel / 8;
-	for (int y = 0; y < image.height; ++y) {
-		for (int x = 0; x < image.width; ++x) {
-			file.read((char*)&image.pixels[y * image.width + x], bytesPerPixel);
-		}
-	}
+	
+	const size_t size = image.width * image.height * 3;
+	// Read the pixel data
+	file.read((char*)image.pixels, size);
 
 	return true;
 }
@@ -201,7 +197,9 @@ bool FileHandler::readPPMImage(std::ifstream& file, Image& image) const {
 bool FileHandler::readBMPImage(std::ifstream& file, Image& image) const {
 	BMPImage bmpImage;
 	// Read the BMP file header
-	file.read((char*)&image.fileType, sizeof(image.fileType)); 
+	image.fileType = FileType::BMP;
+	uint16_t fileType;
+	file.read((char*)&fileType, sizeof(fileType));
 	
 	file.read((char*)&image.fileSize, sizeof(image.fileSize));
 

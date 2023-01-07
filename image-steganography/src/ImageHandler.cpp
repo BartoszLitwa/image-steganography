@@ -7,7 +7,7 @@
 /// <param name="image">Pass the image that holds the message</param>
 /// <param name="message">Message that is going to be saved in image</param>
 /// <param name="startPixel">From which pixel we should start encoding message</param>
-/// <returns></returns>
+/// <returns>Returns true if successfully encoded message in the image's pixels data</returns>
 bool ImageHandler::encodeMessage(Image& image, const std::string& message, const int& startPixel) const
 {
     std::stringstream ss;
@@ -51,7 +51,7 @@ bool ImageHandler::encodeMessage(Image& image, const std::string& message, const
 /// <param name="image">Pass the image that holds the message</param>
 /// <param name="startPixel">From which pixel we should start reading the encoded message</param>
 /// <param name="pixelsAlocated">How many pixels we should be reading to get correct message</param>
-/// <returns></returns>
+/// <returns>Returns decoded message from the modified image's pixels data</returns>
 std::string ImageHandler::decodeMessage(const Image& image, const int& startPixel, const int& pixelsAlocated) const
 {
     std::stringstream ss;
@@ -96,7 +96,7 @@ std::string ImageHandler::decodeMessage(const Image& image, const int& startPixe
 /// </summary>
 /// <param name="message">Message that is going to be stored</param>
 /// <param name="bitsPerPixel">How many bits 1 pixel stores</param>
-/// <returns></returns>
+/// <returns>Returns number of pixels needed to store message</returns>
 int ImageHandler::getPixelsNeededToAlocate(const std::string& message, const int& bitsPerPixel) const
 {
     return (message.length() * 8) / (bitsPerPixel / 8) + 1; // +1 to store the message length at the start
@@ -107,7 +107,7 @@ int ImageHandler::getPixelsNeededToAlocate(const std::string& message, const int
 /// </summary>
 /// <param name="val">Value that is going to be affected</param>
 /// <param name="bit">Bit to we want to replace the last bit of val</param>
-/// <returns></returns>
+/// <returns>Returns 8 bit val with changed last bit to requeste
 uint8_t ImageHandler::replaceLastBit(uint8_t& val, unsigned char bit) const
 {
     // 0 will be represented by 000000 but ~1 will be 0
@@ -122,7 +122,7 @@ uint8_t ImageHandler::replaceLastBit(uint8_t& val, unsigned char bit) const
 /// </summary>
 /// <param name="image">Pass the image that holds the data of pixels</param>
 /// <param name="message">Message that will be encoded in image</param>
-/// <returns></returns>
+/// <returns>Return true if successfulyy encoded message in image</returns>
 bool ImageHandler::encodeMessageInImage(Image& image, const std::string& message) const {
     // Calculate the number of pixels needed to store the message
     // Each pixel can store(usually if bits per pixel = 24) 3 bits of the message (one in each channel),

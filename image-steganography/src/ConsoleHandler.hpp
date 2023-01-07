@@ -6,11 +6,23 @@
 #include "structs.hpp"
 #include "FileHandler.hpp"
 
+/// <summary>
+/// Main class for handling the program
+/// </summary>
 class ConsoleHandler
 {
 private:
+	/// <summary>
+	/// Pointer to file handler
+	/// </summary>
 	FileHandler* _fileHandler;
+	/// <summary>
+	/// filePath to the file
+	/// </summary>
 	std::string _filePath;
+	/// <summary>
+	/// Image data
+	/// </summary>
 	Image _image;
 
 	/// <summary>

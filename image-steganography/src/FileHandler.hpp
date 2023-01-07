@@ -3,14 +3,24 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <chrono>
+#include <filesystem>
+#include <iomanip>
+#include <time.h>
 
 #include "structs.hpp"
 #include "enums.hpp"
 #include "ImageHandler.hpp"
 #include "Helpers.hpp"
 
+/// <summary>
+/// Class for reading and writing the image's data from/to the file
+/// </summary>
 class FileHandler {
 private:
+	/// <summary>
+	/// Pointer to Image Handler to take care of the image data
+	/// </summary>
 	ImageHandler* _imageHandler;
 
 	/// <summary>

@@ -1,4 +1,5 @@
 #pragma once
+#include "enums.hpp"
 #include <string>
 
 struct BMPImage {
@@ -38,8 +39,9 @@ struct Pixel {
 struct Image {
 	// stored as 1D array
 	Pixel* pixels;
+	std::string last_modified_time;
 	
-	uint16_t fileType;
+	FileType fileType;
 	uint32_t fileSize;
 	uint32_t dataOffset;
 	uint32_t width;
