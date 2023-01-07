@@ -61,14 +61,22 @@ bool FileHandler::writeImage(const std::string& filePath, const Image& image) co
 /// <returns>Returns if the .ppm image has been successfully saved</returns>
 bool FileHandler::writePPMImage(std::ofstream& file, const Image& image) const {
 	file << image.ppm.magicNumber << std::endl;
-	file << image.width << std::endl;
-	file << image.height << std::endl;
+	if (image.ppm.comments != "") {
+		file << image.ppm.comments;
+	}
+	file << image.width << " " << image.height << std::endl;
+	if(image.ppm.max_value != 0)
+		file << image.ppm.max_value << std::endl;
 	
 	// Write the pixel data to the file
 	int bytesPerPixel = image.bitsPerPixel / 8;
 	for (int y = 0; y < image.height; ++y) {
 		for (int x = 0; x < image.width; ++x) {
 			file.write((char*)&image.pixels[y * image.width + x], bytesPerPixel);
+			file << "	";
+			/*file.write((char*)&image.pixels[y * image.width + x], bytesPerPixel);
+			Pixel pi = image.pixels[y * image.width + x];
+			int a = 1;*/
 		}
 	}
 
@@ -85,10 +93,36 @@ bool FileHandler::writePPMImage(std::ofstream& file, const Image& image) const {
 /// <returns>Returns if the .bmp image has been successfully saved</returns>
 bool FileHandler::writeBMPImage(std::ofstream& file, const Image& image) const {
 	// Seek to the pixel data
+	file.write((char*)&image.fileType, sizeof(image.fileType));
+
+	file.write((char*)&image.fileSize, sizeof(image.fileSize));
+
+	file.write((char*)&image.bmp.reserved, sizeof(image.bmp.reserved));
+
+	file.write((char*)&image.dataOffset, sizeof(image.dataOffset));
+
+	// write the header size
+	file.write((char*)&image.bmp.infoHeaderSize, sizeof(image.bmp.infoHeaderSize));
+
+	// write the image width and height
+	file.write((char*)&image.width, sizeof(image.width));
+	file.write((char*)&image.height, sizeof(image.height));
+
+	file.write((char*)&image.bmp.planes, sizeof(image.bmp.planes));
+	// write the bits per pixel
+	file.write((char*)&image.bitsPerPixel, sizeof(image.bitsPerPixel));
+
+	file.write((char*)&image.bmp.compression, sizeof(image.bmp.compression));
+	file.write((char*)&image.dataSize, sizeof(image.dataSize));
+	file.write((char*)&image.bmp.xPixelsPerMeter, sizeof(image.bmp.xPixelsPerMeter));
+	file.write((char*)&image.bmp.yPixelsPerMeter, sizeof(image.bmp.yPixelsPerMeter));
+	file.write((char*)&image.bmp.colorsInColorTable, sizeof(image.bmp.colorsInColorTable));
+	file.write((char*)&image.bmp.importantColorCount, sizeof(image.bmp.importantColorCount));
+	
 	file.seekp(image.dataOffset);
 	// Write the pixel data to the file
-	const int paddingAmount = ((4 - (image.width * 3) % 4) % 4);
-	unsigned char bmpPad[2] = {0, 0};
+	const int paddingAmount = (4 - (image.width * (image.bitsPerPixel / 8)) % 4) % 4;
+	unsigned char bmpPad[3] = {0, 0, 0};
 	
 	int bytesPerPixel = image.bitsPerPixel / 8;
 	for (int y = 0; y < image.height; ++y) {
@@ -114,7 +148,34 @@ bool FileHandler::readPPMImage(std::ifstream& file, Image& image) const {
 	image.bitsPerPixel = 24;
 	
 	PPMImage ppm;
-	file >> ppm.magicNumber >> image.width	>> image.height;
+	std::getline(file, ppm.magicNumber);
+	if (ppm.magicNumber != "P6" && ppm.magicNumber != "P3") {
+		std::cout << "Error: Invalid PPM format" << std::endl;
+		return false;
+	}
+
+	// Read the next three lines and extract the image width, height, and maximum value
+	std::string line;
+	for (int i = 0; i < 3; ++i) {
+		std::getline(file, line);
+		std::stringstream ss(line);
+		if (line[0] == '#') {
+			ppm.comments += line + "\n";
+			// Skip commented lines
+			--i;
+			continue;
+		}
+		if (i == 0) {
+			// Extract the width and height from the same line
+			ss >> image.width >> image.height;
+			ppm.width = image.width;
+			ppm.height = image.height;
+		}
+		else if (i == 1) {
+			// Extract the maximum value
+			ss >> ppm.max_value;
+		}
+	}
 	
 	image.ppm = ppm;
 
@@ -169,7 +230,7 @@ bool FileHandler::readBMPImage(std::ifstream& file, Image& image) const {
 	image.pixels = new Pixel[image.width * image.height];
 	image.bmp = bmpImage;
 	
-	const int paddingAmount = ((4 - (image.width * 3) % 4) % 4);
+	const int paddingAmount = (4 - (image.width * (image.bitsPerPixel / 8)) % 4) % 4;
 
 	file.seekg(image.dataOffset);
 	int bytesPerPixel = image.bitsPerPixel / 8;

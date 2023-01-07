@@ -13,8 +13,8 @@ int main(int argc, char* argv[])
 {
 	argc = 3;
 	std::string s1 = "-e";
-	std::string s2 = "E:/Development/Projects/image-steganography/image-steganography/images/1.ppm";
-	std::string s3 = "message to be encoded";
+	std::string s2 = "E:/Development/Projects/image-steganography/image-steganography/images/2.bmp";
+	std::string s3 = "message to be encoded is super long hahaha test asdfkjlasdf;lasdjkfasfdfasdf";
 
 	// copy the string s1 into argv[0]
 	argv[0] = new char[s1.length() + 1];

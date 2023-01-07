@@ -21,8 +21,10 @@ struct BMPImage {
 
 struct PPMImage {
 	std::string magicNumber;
+	std::string comments;
 	uint32_t width;
 	uint32_t height;
+	uint32_t max_value;
 };
 
 // Structure to hold the data for a single image pixel
